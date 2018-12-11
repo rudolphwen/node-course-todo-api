@@ -4,6 +4,7 @@
 // mongoose.connect('mongodb://localhost:27017/TodoApp', { useNewUrlParser: true });
 
 let express = require('express');
+let { ObjectID } = require('mongodb');
 
 let { mongoose } = require('./db/mongoose');
 let { Todo } = require('./models/todo');
@@ -32,6 +33,34 @@ app.get('/todos', (req, res) => {
         res.send({todos});
     }, (e) => {
         res.status(400).send(e);
+    });
+});
+
+// GET /todos/12445225
+app.get('/todos/:id', (req, res) => {
+    // res.send(req.params);
+    let id = req.params.id;
+
+    // Valid id using isValid
+        // 404 - send back empty send
+    if(!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    // findById
+        // seccess
+            // if todo - send it back
+            // if no todo - send back 404 with empty body
+        // error
+            // 400 - and send empty body back
+    Todo.findById(id).then((todo) => {
+        if(!todo) {
+            return res.status(404).send();
+        }
+        // res.send({todo: todo});
+        res.send({todo});
+    }, (e) => {
+        res.status(400).send();
     });
 });
 
