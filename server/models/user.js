@@ -19,7 +19,7 @@ let UserSchema = new mongoose.Schema({
         required: true,
         minlength: 1,
         trim: true,
-        unique: true,
+        // unique: true,
         validate: {
             validator: validator.isEmail,
             message: '{VALUE} is not a valid email'
@@ -52,7 +52,8 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
     let user = this;
     let access = 'auth';
-    let token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
+    // let token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();    // Rudolph: jwt.sign() returns a string
+    let token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123');
 
     // user.tokens.push({access, token});
     user.tokens = user.tokens.concat([{access, token}]);
